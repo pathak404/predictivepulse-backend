@@ -1,4 +1,5 @@
 import mongoose, { model, Schema } from "mongoose"
+import { OrderDocument } from "../types"
 
 
 const UserSchema: Schema = new Schema({
@@ -17,7 +18,7 @@ const UserSchema: Schema = new Schema({
 })
 
 
-const OrderSchema: Schema = new Schema({
+const OrderSchema: Schema<OrderDocument> = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     orderId: {
         type: mongoose.Schema.Types.String,
@@ -50,9 +51,9 @@ const OrderSchema: Schema = new Schema({
     }
 })
 
-OrderSchema.methods.createOrderId = function(){
+OrderSchema.methods.createOrderId = function(this: OrderDocument){
     this.orderId = 'ODR'+(new Date()).getTime()
 }
 
-const Order = model('Order', OrderSchema)
+const Order = model<OrderDocument>('Order', OrderSchema)
 export default Order;
