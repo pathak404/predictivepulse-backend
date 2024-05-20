@@ -9,7 +9,6 @@ declare global {
 
         interface Request {
             userId: string;
-            nonce: string;
         }
     }
     

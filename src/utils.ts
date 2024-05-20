@@ -71,9 +71,9 @@ const sendMail = async (name:string, email:string, subject:string, html: string)
 }
 
 const verifyNonce = (req: Request, res: Response, next: NextFunction) => {
-    if(req.nonce !== req.body.nonce){
-        return res.sendResponse({message: "Nonce validation failed"}, 401);
-    }
+    // if(req.headers['X-Nonce'] !== req.body.nonce){
+    //     return res.sendResponse({message: "Nonce validation failed"}, 401);
+    // }
     next();
 }
 

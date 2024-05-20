@@ -26,6 +26,6 @@ export interface UserDocument extends Document {
     validTill: number;
     createdAt: Date;
     createUserId: () => void;
-    setPassword: () => void;
-    verifyPassword: () =>void;
+    setPassword: (password: string) => void;
+    verifyPassword: (password: string) =>boolean;
 }

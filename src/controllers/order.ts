@@ -67,7 +67,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
 const afterPayment = async (paymentData: Record<string, any>) => {
     try{
         const passwordKey = crypto.randomBytes(10).toString("hex")
-        const validTill = (new Date()).getTime() + (172800 * 1000)
+        const validTill = Date.now() + (172800 * 1000)
         const passwordLink = process.env.FRONTEND_URL+'/create-password/'+passwordKey
 
         const user = new User({
