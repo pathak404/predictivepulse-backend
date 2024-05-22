@@ -29,3 +29,17 @@ export interface UserDocument extends Document {
     setPassword: (password: string) => void;
     verifyPassword: (password: string) =>boolean;
 }
+
+
+export interface assetDocument extends Document {
+    symbol: string,
+    type: "data"|"prediction",
+    data: Record<string, any>,
+    date: number
+}
+
+
+export interface nonceDocument extends Document {
+    nonce: string,
+    validTill: number,
+}

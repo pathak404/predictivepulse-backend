@@ -36,7 +36,7 @@ const UserSchema: Schema<UserDocument> = new Schema({
     }
 })
 
-UserSchema.pre<UserDocument>("save", function(next){
+UserSchema.pre<UserDocument>("validate", function(next){
     this.createUserId()
     next()
 })

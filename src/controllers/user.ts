@@ -1,13 +1,14 @@
 import { Request, Response } from "express"
 import User from "../models/user"
 import { generateJWT } from "../utils"
+import { destroyNonce } from "../middlewares/nonce"
 
 export const createPassword = async (req: Request, res: Response) => {
     try{
         const password = req.body.password
         const key = req.params.key
         const user = await User.findOne({passwordKey:key});
-        if(!user || user.validTill > Date.now()){
+        if(!user || user.validTill < Date.now()){
             throw new Error("Invalid/Expired link")
         }
         user.setPassword(password)
@@ -17,6 +18,7 @@ export const createPassword = async (req: Request, res: Response) => {
         res.sendResponse({
             message: "Password created successfully."
         })
+        destroyNonce(req)
     }catch(error: any){
         res.sendResponse({
             message: error.message
@@ -28,7 +30,7 @@ export const verifyPasswordKey = async (req: Request, res: Response) => {
     try{
         const key = req.params.key
         const user = await User.findOne({passwordKey:key});
-        if(!user || user.validTill > Date.now()){
+        if(!user || user.validTill < Date.now()){
             throw new Error("Invalid/Expired link")
         }
         res.sendResponse({
@@ -44,9 +46,9 @@ export const verifyPasswordKey = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     try{
-        const {email, passowrd} = req.body
+        const {email, password} = req.body
         const user = await User.findOne({email})
-        if(!user || !user.verifyPassword(passowrd)){
+        if(!user || !user.verifyPassword(password)){
             throw new Error("Invalid Email/Password")
         }
         const token = generateJWT({
@@ -57,6 +59,7 @@ export const login = async (req: Request, res: Response) => {
             message: "Login Successfull",
             token,
         })
+        destroyNonce(req)
     }catch(error: any){
         res.sendResponse({message: error.message}, 500)
     }

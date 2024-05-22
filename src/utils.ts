@@ -70,13 +70,6 @@ const sendMail = async (name:string, email:string, subject:string, html: string)
     })
 }
 
-const verifyNonce = (req: Request, res: Response, next: NextFunction) => {
-    // if(req.headers['X-Nonce'] !== req.body.nonce){
-    //     return res.sendResponse({message: "Nonce validation failed"}, 401);
-    // }
-    next();
-}
-
 const mojoAccessToken = async () => {
     const res = await fetch(process.env.MOJO_API_URL + '/oauth2/token/', {
         method: "POST",
@@ -98,7 +91,7 @@ const mojoAccessToken = async () => {
 }
 
 
-const mojoPaymentRequestId = async (payment_data: Record<string, any>) => {
+const mojoPaymentRequestData = async (payment_data: Record<string, any>) => {
     const access_token = await mojoAccessToken()
     const res = await fetch(process.env.MOJO_API_URL + '/v2/payment_requests/', {
         method: "POST",
@@ -111,9 +104,9 @@ const mojoPaymentRequestId = async (payment_data: Record<string, any>) => {
     })
     const data = await res.json()
     if(!res.ok || data.message){
-        throw new Error(data.message || res.statusText || "mojoPaymentRequestId: something went wrong")
+        throw new Error(data.message || res.statusText || "mojoPaymentRequestData: something went wrong")
     }
-    return data.id
+    return data
 }
 
 
@@ -139,8 +132,7 @@ export {
     requestValidator, 
     generateJWT, 
     verifyAuth, 
-    mojoPaymentRequestId, 
+    mojoPaymentRequestData, 
     mojoPaymentData, 
-    verifyNonce,
     sendMail,
 }

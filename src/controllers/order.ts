@@ -1,10 +1,11 @@
 import { Request, Response } from "express"
 import Order from "../models/order"
 import { OrderDocument } from "../types"
-import { mojoPaymentData, mojoPaymentRequestId, sendMail } from "../utils"
+import { mojoPaymentData, mojoPaymentRequestData, sendMail } from "../utils"
 import crypto from "node:crypto"
 import User from "../models/user"
 import mongoose from "mongoose"
+import { destroyNonce } from "../middlewares/nonce"
 
 export const createOrder = async (req: Request, res: Response) => {
     const {name, email, phone} = req.body
@@ -37,11 +38,12 @@ export const createOrder = async (req: Request, res: Response) => {
             send_email: false,
             allow_repeated_payments: false,
         }
-        const paymentRequestId = await mojoPaymentRequestId(payment_data)
-        order.paymentRequestId = paymentRequestId
+        const paymentData = await mojoPaymentRequestData(payment_data)
+        order.paymentRequestId = paymentData.id
 
         await Order.findOneAndUpdate({'user.email': email}, order, {upsert: true})
-        res.sendResponse({message: "Order created successfully", payment_request_id: paymentRequestId }, 201)
+        res.sendResponse({message: "Order created successfully", longurl: paymentData.longurl, order_id: order.orderId }, 201)
+        destroyNonce(req)
     }catch(error: any){
         res.sendResponse({message: error.message}, 500)
     }

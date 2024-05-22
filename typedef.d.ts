@@ -25,6 +25,7 @@ declare global {
             MAIL_PASSWORD: string;
             MAIL_HOST: string;
             MAIL_PORT: number;
+            PREDICTION_URL:string;
         }
     }
 }

@@ -8,8 +8,8 @@ export const loginValidator = Joi.object({
 
 export const orderValidator = Joi.object({
     email: Joi.string().email().lowercase().required(),
-    phone: Joi.number().min(10).max(10).required(),
-    name: Joi.string().pattern(new RegExp('^[a-zA-z]{3, 30}$')).required(),
+    phone: Joi.string().pattern(/^\d{10}$/).required(),
+    name: Joi.string().pattern(new RegExp('^[a-zA-Z]{3,30}$')).required(),
 })
 
 
