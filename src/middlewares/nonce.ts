@@ -44,3 +44,18 @@ export const destroyNonce = async (req: Request) => {
     const nonce = req.headers['x-nonce'];
     await Nonce.findOneAndDelete({nonce})
 }
+
+
+
+export const removeExpiredNonces = async () => {
+    try{
+        await Nonce.deleteMany({
+            validTill: {
+                $lte: Date.now()
+            }
+        });
+        console.log("CRON: Removed expired nonces")
+    }catch(error: any){
+        console.log("removeExpiredNonces: "+ error.message)
+    }
+}

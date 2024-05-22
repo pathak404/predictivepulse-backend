@@ -4,7 +4,9 @@ import { sendResponseMiddleware } from "./src/utils"
 import mongoose from "mongoose"
 import cors from "cors"
 import { route } from "./src/routes"
+import { crons } from "./src/crons"
 dotEnv.config()
+crons()
 
 const app: Express = express()
 const port = process.env.PORT
